@@ -1,0 +1,19 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      # Command to get the latest task definition, this is just a placeholder. You need to figure out the exact command or logic.
+      - export LATEST_TASK_DEF=$(aws ecs describe-task-definition --task-definition example | jq .taskDefinition.revision)
+  build:
+    commands:
+      # Command to generate the appspec.yaml with the latest task definition.
+      - echo -e "version: 0.0\nResources:\n  - TargetService:\n      Type: AWS::ECS::Service\n      Properties:\n        TaskDefinition: arn:aws:ecs:us-east-2:443338647997:task-definition/example:$LATEST_TASK_DEF\n        LoadBalancerInfo:\n          ContainerName: example-container\n          ContainerPort: 80" > appspec.yaml
+  post_build:
+    commands:
+      # Command to copy the generated appspec.yaml to the output directory.
+      - cp appspec.yaml $CODEBUILD_SRC_DIR
+
+artifacts:
+  files:
+    - appspec.yaml
