@@ -29,5 +29,9 @@ phases:
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo write definitions file...
       - printf '[{"name":"exp-code-pipeline","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+      - aws lambda invoke --function-name pipeline-task-version-upgrade output.txt
+      - cat output.txt > appspec.yaml
 artifacts:
-  files: imagedefinitions.json
+  files:
+    - imagedefinitions.json
+    - appspec.yaml
