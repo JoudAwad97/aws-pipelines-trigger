@@ -30,7 +30,7 @@ phases:
       - echo write definitions file...
       - printf '[{"name":"exp-code-pipeline","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       - aws lambda invoke --function-name pipeline-task-version-upgrade output.txt
-      - cat output.txt > appspec.yaml
+      - aws s3 cp s3://s3bucketcodepiplinesdata/application-pipeline/build_outp/appspec.yaml appspec.yaml
 artifacts:
   files:
     - imagedefinitions.json
