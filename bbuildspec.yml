@@ -21,6 +21,7 @@ phases:
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Update the REPOSITORY_URI:IMAGE_TAG in task definition...
       - echo Container image to be used $REPOSITORY_URI:$IMAGE_TAG
+      # passing data dynamically from the buildspec to the taskdef.json
       - sed -i 's@REPOSITORY_URI@'$REPOSITORY_URI'@g' taskdef.json
       - sed -i 's@IMAGE_TAG@'$IMAGE_TAG'@g' taskdef.json
       - echo update the REGION in task definition...
