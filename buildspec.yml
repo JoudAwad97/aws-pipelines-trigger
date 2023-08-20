@@ -20,17 +20,19 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image.
-      - docker build -t $REPOSITORY_URI:latest .
-      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+      - docker build -t $REPOSITORY_URI:$VERSION .
+      - docker tag $REPOSITORY_URI:$VERSION $REPOSITORY_URI:$IMAGE_TAG
+      - printf '{"ImageURI":"%s"}'  443338647997.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPOSITORY_URI:$VERSION  > /imageDetail.json
+
   post_build:
     commands:
       - echo Build completed on `date`
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
-      - echo write definitions file...
-      - printf '[{"name":"exp-code-pipeline","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
-      - aws lambda invoke --function-name pipeline-task-version-upgrade output.txt
-      - aws s3 cp s3://s3bucketcodepiplinesdata/application-pipeline/build_outp/appspec.yml appspec.yaml
+      #- echo write definitions file...
+      #- printf '[{"name":"exp-code-pipeline","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+      #- aws lambda invoke --function-name pipeline-task-version-upgrade output.txt
+      #- aws s3 cp s3://s3bucketcodepiplinesdata/application-pipeline/build_outp/appspec.yml appspec.yaml
 artifacts:
   files:
     - imagedefinitions.json
