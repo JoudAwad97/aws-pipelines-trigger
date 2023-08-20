@@ -13,22 +13,22 @@ phases:
       - aws --version
       - echo $AWS_DEFAULT_REGION
       - echo "$(aws ecr get-login-password --region $AWS_DEFAULT_REGION)" | docker login --username AWS --password-stdin $ECR_REPOSITORY_URI
-      - REPOSITORY_URI=$ECR_REPOSITORY_URI # Use ECR_REPOSITORY_URI environment variable
-      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - IMAGE_TAG=${COMMIT_HASH:=latest}
+
   build:
     commands:
       - echo Build started on `date`
-      - echo Building the Docker image.
-      - docker build -t $REPOSITORY_URI:$VERSION .
-      - docker tag $REPOSITORY_URI:$VERSION $REPOSITORY_URI:$IMAGE_TAG
-      - printf '{"ImageURI":"%s"}'  443338647997.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPOSITORY_URI:$VERSION  > /imageDetail.json
+      - echo Building the Docker image...
+      - docker build -t $IMAGE_REPO_NAME:$CODEBUILD_BUILD_NUMBER-$IMAGE_SUFFFIX .
+      - docker tag $IMAGE_REPO_NAME:$CODEBUILD_BUILD_NUMBER $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:v1.$CODEBUILD_BUILD_NUMBER-$IMAGE_SUFFFIX
 
   post_build:
     commands:
       - echo Build completed on `date`
-      - docker push $REPOSITORY_URI:latest
-      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - echo Pushing the Docker image...
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:v1.$CODEBUILD_BUILD_NUMBER-$IMAGE_SUFFFIX
+      - mkdir ImageDetail
+      - cd ImageDetail
+      - echo "[{\"imageUri\":\"$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:v1.$CODEBUILD_BUILD_NUMBER-$IMAGE_SUFFFIX\", \"name\":\"feeld-core-api\"}]" > imagedefinitions.json
       #- echo write definitions file...
       #- printf '[{"name":"exp-code-pipeline","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       #- aws lambda invoke --function-name pipeline-task-version-upgrade output.txt
@@ -36,4 +36,10 @@ phases:
 artifacts:
   files:
     - imagedefinitions.json
-    - appspec.yaml
+  name: build_output
+  base-directory: ImageDetail
+  secondary-artifacts:
+    build_output:
+      files:
+        - ImageDetail/imagedefinitions.json
+      name: build_output
