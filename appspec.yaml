@@ -3,7 +3,7 @@ Resources:
   - TargetService:
       Type: AWS::ECS::Service
       Properties:
-        TaskDefinition: "<TASK_DEFINITION>"
+        TaskDefinition: "443338647997.dkr.ecr.us-east-2.amazonaws.com/ecs-docker-repo:latest"
         LoadBalancerInfo:
           ContainerName: "example-container"
           ContainerPort: 80
