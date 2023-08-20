@@ -30,5 +30,5 @@ phases:
       - sed -i 's@TASK_EXECUTION_ARN@'$TASK_EXECUTION_ARN'@g' taskdef.json
 artifacts:
   files:
-    - "appspec.yaml"
+    - "appspec.yml"
     - "taskdef.json"
