@@ -9,26 +9,31 @@ phases:
       nodejs: latest
   pre_build:
     commands:
-      - echo log in to Amazon ECR...
-      - aws --version
-      - echo $AWS_DEFAULT_REGION
-      - echo "$(aws ecr get-login-password --region $AWS_DEFAULT_REGION)" | docker login --username AWS --password-stdin $ECR_REPOSITORY_URI
+      commands:
+        - if [[ $CODEBUILD_WEBHOOK_TRIGGER == branch/* ]]; then BRANCH_NAME=$(echo $CODEBUILD_WEBHOOK_TRIGGER | cut -d'/' -f2); else BRANCH_NAME=default; fi
+        - export IMAGE_REPO_NAME=myrepo-$BRANCH_NAME
+        - COMMIT_SHORT=$(echo $CODEBUILD_SOURCE_VERSION | cut -c 1-7)
+        - export IMAGE_SUFFFIX=$COMMIT_SHORT
+        - echo log in to Amazon ECR...
+        - aws --version
+        - echo us-east-2
+        - echo "$(aws ecr get-login-password --region us-east-2)" | docker login --username AWS --password-stdin $ECR_REPOSITORY_URI
 
   build:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
       - docker build -t $IMAGE_REPO_NAME:$CODEBUILD_BUILD_NUMBER-$IMAGE_SUFFFIX .
-      - docker tag $IMAGE_REPO_NAME:$CODEBUILD_BUILD_NUMBER $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:v1.$CODEBUILD_BUILD_NUMBER-$IMAGE_SUFFFIX
+      - docker tag $IMAGE_REPO_NAME:$CODEBUILD_BUILD_NUMBER 443338647997.dkr.ecr.us-east-2.amazonaws.com/$IMAGE_REPO_NAME:v1.$CODEBUILD_BUILD_NUMBER-$IMAGE_SUFFFIX
 
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:v1.$CODEBUILD_BUILD_NUMBER-$IMAGE_SUFFFIX
+      - docker push 443338647997.dkr.ecr.us-east-2.amazonaws.com/$IMAGE_REPO_NAME:v1.$CODEBUILD_BUILD_NUMBER-$IMAGE_SUFFFIX
       - mkdir ImageDetail
       - cd ImageDetail
-      - echo "[{\"imageUri\":\"$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:v1.$CODEBUILD_BUILD_NUMBER-$IMAGE_SUFFFIX\", \"name\":\"feeld-core-api\"}]" > imagedefinitions.json
+      - echo "[{\"imageUri\":\"443338647997.dkr.ecr.us-east-2.amazonaws.com/$IMAGE_REPO_NAME:v1.$CODEBUILD_BUILD_NUMBER-$IMAGE_SUFFFIX\", \"name\":\"feeld-core-api\"}]" > imagedefinitions.json
       #- echo write definitions file...
       #- printf '[{"name":"exp-code-pipeline","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       #- aws lambda invoke --function-name pipeline-task-version-upgrade output.txt
