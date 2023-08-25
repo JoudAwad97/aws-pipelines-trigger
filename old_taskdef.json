@@ -1,7 +1,7 @@
 {
   "containerDefinitions": [
     {
-      "name": "CONTAINER_NAME",
+      "name": "example-container",
       "image": "REPOSITORY_URI:IMAGE_TAG",
       "portMappings": [
         {
@@ -11,12 +11,12 @@
       ],
       "essential": true,
       "dockerLabels": {
-        "name": "CONTAINER_NAME"
+        "name": "example"
       },
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "AWS_LOGS_GROUP",
+          "awslogs-group": "/ecs/my-ecs-service-logs",
           "awslogs-region": "AWS_REGION",
           "awslogs-stream-prefix": "ecs"
         }
@@ -25,9 +25,9 @@
   ],
   "taskRoleArn": "TASK_EXECUTION_ARN",
   "executionRoleArn": "TASK_EXECUTION_ARN",
-  "family": "FAMILY",
+  "family": "example",
   "networkMode": "awsvpc",
   "requiresCompatibilities": ["FARGATE"],
-  "cpu": "CPU",
-  "memory": "MEMORY"
+  "cpu": "256",
+  "memory": "1024"
 }

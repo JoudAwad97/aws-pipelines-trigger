@@ -32,6 +32,10 @@ phases:
       - sed -i 's@CONTAINER_NAME@'$CONTAINER_NAME'@g' taskdef.json
       - echo update the family in task definition...
       - sed -i 's@FAMILY@'$FAMILY'@g' taskdef.json
+        - echo update the CPU in task definition...
+      - sed -i 's@CPU@'$CPU'@g' taskdef.json
+        - echo update the memory in task definition...
+      - sed -i 's@MEMORY@'$MEMORY'@g' taskdef.json
       - echo '[{"name":"example-container","imageUri":"'$REPOSITORY_URI:$IMAGE_TAG'"}]' > imageDetail.json
 artifacts:
   files:
