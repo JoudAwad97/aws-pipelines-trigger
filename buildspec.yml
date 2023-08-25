@@ -36,7 +36,7 @@ phases:
       - sed -i 's@CPU@'$CPU'@g' taskdef.json
       - echo update the memory in task definition...
       - sed -i 's@MEMORY@'$MEMORY'@g' taskdef.json
-      - echo '[{"name":"DEV-core-api","imageUri":"'$REPOSITORY_URI:$IMAGE_TAG'"}]' > imageDetail.json
+      - echo '[{"name":"domino-core-api","imageUri":"'$REPOSITORY_URI:$IMAGE_TAG'"}]' > imageDetail.json
 artifacts:
   files:
     - "appspec.yaml"
