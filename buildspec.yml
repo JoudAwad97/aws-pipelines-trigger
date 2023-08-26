@@ -21,22 +21,14 @@ phases:
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - docker push $REPOSITORY_URI:$IMAGE_TAG_ENV
-      # call a lambda function that wil generate the taskdef.json dynamically for us
-      - |
-        aws lambda invoke \
-        --function-name update-task-definition \
-        --payload '{"task_family": "'"$FAMILY"'", "new_image": "'"$REPOSITORY_URI:$IMAGE_TAG"'"}' \
-        outputfile.txt
-      - TASKDEF_JSON=$(cat outputfile.txt | jq -r .body)
-      - echo $TASKDEF_JSON > taskdef.json
       # passing data dynamically from the buildspec to the taskdef.json
       #- echo Update the REPOSITORY_URI:IMAGE_TAG in task definition...
       #- echo Container image to be used $REPOSITORY_URI:$IMAGE_TAG
       #- sed -i 's@REPOSITORY_URI@'$REPOSITORY_URI'@g' taskdef.json
       #- sed -i 's@IMAGE_TAG@'$IMAGE_TAG'@g' taskdef.json
-      - echo '[{"name":"domino-core-api","imageUri":"'$REPOSITORY_URI:$IMAGE_TAG'"}]' > imageDetail.json
+      #- echo '[{"name":"domino-core-api","imageUri":"'$REPOSITORY_URI:$IMAGE_TAG'"}]' > imageDetail.json
 artifacts:
   files:
     - "appspec.yaml"
-    - "taskdef.json"
-    - imageDetail.json
+    #- "taskdef.json"
+    #- imageDetail.json
