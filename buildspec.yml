@@ -26,9 +26,9 @@ phases:
       #- echo Container image to be used $REPOSITORY_URI:$IMAGE_TAG
       #- sed -i 's@REPOSITORY_URI@'$REPOSITORY_URI'@g' taskdef.json
       #- sed -i 's@IMAGE_TAG@'$IMAGE_TAG'@g' taskdef.json
-      #- echo '[{"name":"domino-core-api","imageUri":"'$REPOSITORY_URI:$IMAGE_TAG'"}]' > imageDetail.json
+      - echo '[{"name":"domino-core-api","imageUri":"'$REPOSITORY_URI:$IMAGE_TAG'"}]' > imageDetail.json
 artifacts:
   files:
     - "appspec.yaml"
     #- "taskdef.json"
-    #- imageDetail.json
+    - imageDetail.json
