@@ -1,0 +1,46 @@
+{
+  "containerDefinitions": [
+    {
+      "name": "domino-core-api",
+      "image": "443338647997.dkr.ecr.us-east-2.amazonaws.com/domino-core-api:b9397f6",
+      "cpu": 1024,
+      "memory": 2048,
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "hostPort": 80,
+          "protocol": "tcp"
+        }
+      ],
+      "essential": true,
+      "environment": [
+        {
+          "name": "PORT",
+          "value": "80"
+        },
+        {
+          "name": "NODE_ENV",
+          "value": "production"
+        }
+      ],
+      "secrets": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "domino-core-api",
+          "awslogs-region": "us-east-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ],
+  "family": "domino-core-api",
+  "taskRoleArn": "arn:aws:iam::443338647997:role/DEV-FARGATE",
+  "executionRoleArn": "arn:aws:iam::443338647997:role/DEV-FARGATE",
+  "networkMode": "awsvpc",
+  "volumes": [],
+  "compatibilities": ["EC2", "FARGATE"],
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "2048"
+}
