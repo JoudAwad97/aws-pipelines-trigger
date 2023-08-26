@@ -22,13 +22,14 @@ phases:
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - docker push $REPOSITORY_URI:$IMAGE_TAG_ENV
       # call a lambda function that wil generate the taskdef.json dynamically for us
-      - >
-        TASKDEF_JSON=$(aws lambda invoke 
+      - |
+        aws lambda invoke 
         --function-name update-task-definition 
         --payload '{"task_family": "'$FAMILY'", "new_image": "'$REPOSITORY_URI:$IMAGE_TAG'"}' 
-        outputfile.txt | jq -r .body)
-      # Save the output to a taskdef.json file
-      - echo $TASKDEF_JSON > taskdef.json
+        outputfile.txt
+      - |
+        TASKDEF_JSON=$(cat outputfile.txt | jq -r .body)
+        echo $TASKDEF_JSON > taskdef.json
       # passing data dynamically from the buildspec to the taskdef.json
       #- echo Update the REPOSITORY_URI:IMAGE_TAG in task definition...
       #- echo Container image to be used $REPOSITORY_URI:$IMAGE_TAG
