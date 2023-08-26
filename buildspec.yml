@@ -25,7 +25,7 @@ phases:
       - >
         TASKDEF_JSON=$(aws lambda invoke 
         --function-name update-task-definition 
-        --payload '{"task_family": "$FAMILY", "new_image": "'$REPOSITORY_URI:$IMAGE_TAG'"}' 
+        --payload '{"task_family": "'$FAMILY'", "new_image": "'$REPOSITORY_URI:$IMAGE_TAG'"}' 
         outputfile.txt | jq -r .body)
       # Save the output to a taskdef.json file
       - echo $TASKDEF_JSON > taskdef.json
