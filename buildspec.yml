@@ -8,6 +8,7 @@ phases:
       - echo "$(aws ecr get-login-password --region $AWS_DEFAULT_REGION)" | docker login --username AWS --password-stdin $REPOSITORY_URI
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=latest}
+      - cp /codebuild/output/src_src_secondary/lambda_output/taskdef.json .
       # - SECRET_VALUE=$(aws secretsmanager get-secret-value --secret-id arn:aws:secretsmanager:region:account-id:secret:secret-name-abc123 --query SecretString --output text)
   build:
     commands:
