@@ -11,5 +11,6 @@ app.get("/info", (req, res) => {
 });
 
 app.listen(80, () => {
-  console.log("listening on 3000");
+  console.log(`listening on ${process.env.PORT}`);
+  console.log(`Node env ${process.env.NODE_ENV}`);
 });
