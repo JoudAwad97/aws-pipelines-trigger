@@ -8,9 +8,9 @@ phases:
       - echo "$(aws ecr get-login-password --region $AWS_DEFAULT_REGION)" | docker login --username AWS --password-stdin $REPOSITORY_URI
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=latest}
-      - sudo apt-get update
-      - sudo apt-get install -y unzip
-      - ls -la /codebuild/output/
+      #- sudo apt-get update
+      #- sudo apt-get install -y unzip
+      #- ls -la /codebuild/output/
       # - unzip /codebuild/output/src*/lambda_output/artifact.zip -d /
   build:
     commands:
@@ -24,7 +24,6 @@ phases:
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - docker push $REPOSITORY_URI:$IMAGE_TAG_ENV
-      - ls -la /
       # passing data dynamically from the buildspec to the taskdef.json
       #- echo Update the REPOSITORY_URI:IMAGE_TAG in task definition...
       #- echo Container image to be used $REPOSITORY_URI:$IMAGE_TAG
