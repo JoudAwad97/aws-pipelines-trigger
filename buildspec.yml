@@ -8,10 +8,8 @@ phases:
       - echo "$(aws ecr get-login-password --region $AWS_DEFAULT_REGION)" | docker login --username AWS --password-stdin $REPOSITORY_URI
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=latest}
+      # copy the output from the lambda_output into the current build directory
       - cp -R $CODEBUILD_SRC_DIR_lambda_output/* $CODEBUILD_SRC_DIR/
-      #- sudo apt-get update
-      #- sudo apt-get install -y unzip
-      # - unzip /codebuild/output/src*/lambda_output/artifact.zip -d /
   build:
     commands:
       - echo Docker build and tagging started on `date`
@@ -24,15 +22,14 @@ phases:
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - docker push $REPOSITORY_URI:$IMAGE_TAG_ENV
-      - ls -la $CODEBUILD_SRC_DIR
       # passing data dynamically from the buildspec to the taskdef.json
       - echo Update the REPOSITORY_URI:IMAGE_TAG in task definition...
       - echo Container image to be used $REPOSITORY_URI:$IMAGE_TAG
       - sed -i 's@REPOSITORY_URI@'$REPOSITORY_URI'@g' taskdef.json
       - sed -i 's@IMAGE_TAG@'$IMAGE_TAG'@g' taskdef.json
-      - echo '[{"name":"domino-core-api","imageUri":"'$REPOSITORY_URI:$IMAGE_TAG'"}]' > imageDetail.json
+      #- echo '[{"name":"domino-core-api","imageUri":"'$REPOSITORY_URI:$IMAGE_TAG'"}]' > imageDetail.json
 artifacts:
   files:
     - "appspec.yaml"
     - "taskdef.json"
-    - imageDetail.json
+    #- imageDetail.json
