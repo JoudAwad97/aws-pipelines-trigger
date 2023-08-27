@@ -10,8 +10,8 @@ phases:
       - IMAGE_TAG=${COMMIT_HASH:=latest}
       - sudo apt-get update
       - sudo apt-get install -y unzip
-      - ls /codebuild/output/src*/lambda_output
       - ls -la /codebuild/output/
+      - ls /codebuild/output/src*/lambda_output
       - unzip /codebuild/output/src*/lambda_output/artifact.zip -d /
   build:
     commands:
