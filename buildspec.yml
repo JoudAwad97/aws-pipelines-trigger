@@ -10,8 +10,8 @@ phases:
       - IMAGE_TAG=${COMMIT_HASH:=latest}
       - sudo apt-get update
       - sudo apt-get install -y unzip
-      - ls -la /codebuild/output/src123/
-      - unzip /codebuild/output/src*/lambda_output/artifact.zip -d /
+      - ls -la /codebuild/output/
+      # - unzip /codebuild/output/src*/lambda_output/artifact.zip -d /
   build:
     commands:
       - echo Docker build and tagging started on `date`
@@ -24,6 +24,7 @@ phases:
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - docker push $REPOSITORY_URI:$IMAGE_TAG_ENV
+      - ls -la /
       # passing data dynamically from the buildspec to the taskdef.json
       #- echo Update the REPOSITORY_URI:IMAGE_TAG in task definition...
       #- echo Container image to be used $REPOSITORY_URI:$IMAGE_TAG
