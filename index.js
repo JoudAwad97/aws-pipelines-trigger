@@ -7,7 +7,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/info", (req, res) => {
-  res.send("hey this is /info api");
+  res.send(process.env);
 });
 
 app.listen(80, () => {
